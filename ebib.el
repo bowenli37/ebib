@@ -528,7 +528,7 @@ Its value can be 'strings, 'fields, or 'preamble.")
   (filename nil)                            ; name of the BibTeX file that holds this database
   (name nil)                                ; name of the database
   (modified nil)                            ; has this database been modified?
-  (backup nil)                         ; do we need to make a backup of the .bib file?
+  (backup nil)                              ; do we need to make a backup of the .bib file?
   (virtual nil))                            ; is this a virtual database?
 
 (defun ebib-db-new-database (&optional db)
