@@ -1532,7 +1532,7 @@ If DB is nil, it defaults to the current database."
                (setq val (copy-sequence val)))
            (if val
                (values val nil)))
-         (let ((xref (ebib-retrieve-entry (to-raw (gethash 'crossref entry)) db)))
+         (let ((xref (ebib-retrieve-entry (to-raw (gethash "crossref" entry)) db)))
            (if xref
              (let ((entry-type (gethash "=type=" entry)))
                (values (gethash (ebib-get-xref-field field entry-type) xref) t)))))
