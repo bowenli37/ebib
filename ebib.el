@@ -551,7 +551,7 @@ ENTRY must bey a key."
 (defun ebib-db-set-entry (key data db &optional if-exists)
   "Add or modify entry KEY in database DB.
 DATA is an alist of (FIELD . VALUE) pairs. A pseudo-field
-\"=type=\" must be present (though this is not checked for).
+\"=type=\" should be present (though this is not checked for).
 
 IF-EXISTS defines what to do when the key already exists in DB.
 If it is 'overwrite, replace the existing entry. If it is 'uniquify,
