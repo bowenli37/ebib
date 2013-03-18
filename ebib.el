@@ -538,17 +538,17 @@ Its value can be 'strings, 'fields, or 'preamble.")
 The new database is a copy of DB or a completely new database if
 DB is NIL."
   (if db
-      (copy-ebib-db db)
-    (make-ebib-db)))
+      (copy-ebib-dbstruct db)
+    (make-ebib-dbstruct)))
 
 (defun ebib-db-get-current-entry-key (db)
   "Return the key of the current entry in DB."
-  (ebib-db-cur-entry db))
+  (ebib-dbstruct-cur-entry db))
 
 (defun ebib-db-set-current-entry-key (entry db)
   "Set the current entry in DB to ENTRY.
 ENTRY must bey a key."
-  (setf (ebib-db-cur-entry db) entry))
+  (setf (ebib-dbstruct-cur-entry db) entry))
 
 (defun ebib-db-set-entry (key data db &optional if-exists)
   "Add or modify entry KEY in database DB.
@@ -566,7 +566,7 @@ In order to delete an entry, DATA must be NIL and IF-EXISTS must be
 'overwrite.
 
 If storing/updating/deleting the entry is successful, return its key."
-  (let ((exists (gethash key (ebib-db-database db))))
+  (let ((exists (gethash key (ebib-dbstruct-database db))))
     (when exists
       (cond
        ;;  if so required, make the entry unique:
@@ -581,15 +581,15 @@ If storing/updating/deleting the entry is successful, return its key."
 	(error "Ebib: key `%s' exists in database; cannot overwrite" key))))
     (unless exists
       (if data
-	  (puthash key data (ebib-db-database db))
-	(remhash key (ebib-db-database db)))
+	  (puthash key data (ebib-dbstruct-database db))
+	(remhash key (ebib-dbstruct-database db)))
       key)))
 
 (defun ebib-db-get-entry (key db &optional noerror)
   "Return entry KEY in database DB as an alist.
 The entry is returned as an alist of (FIELD . VALUE) pairs.
 Trigger an error if KEY does not exist, unless NOERROR is T."
-  (let ((entry (gethash key (ebib-db-database db))))
+  (let ((entry (gethash key (ebib-dbstruct-database db))))
     (unless (or entry noerror)
       (error "Ebib: entry `%s' does not exist" key))
     entry))
@@ -602,7 +602,7 @@ key is found. If suffixing `z' does not yield a unique key, `aa'
 is suffixed, then `ab' etc."
   (let* ((suffix ?b)
 	 (unique-key (concat key (list suffix))))
-    (while (gethash unique-key (ebib-db-database db))
+    (while (gethash unique-key (ebib-dbstruct-database db))
       (setq suffix (1+ suffix))
       (setq unique-key (concat key (list suffix)))
       (when (eq suffix ?z)
@@ -615,7 +615,7 @@ is suffixed, then `ab' etc."
   (let (keys-list)
     (maphash #'(lambda (key value)
 		 (add-to-list 'keys-list key))
-	     (ebib-db-database db))
+	     (ebib-dbstruct-database db))
     (sort keys-list 'string<)))
 
 (defun ebib-db-change-key (key new-key db &optional if-exists)
@@ -722,7 +722,7 @@ If it is NIL (or any other value), an error is raised.
 In order to delete a @STRING definition, pass NIL as VALUE and
 set IF-EXISTS to 'overwrite."
   (let* ((old-string (ebib-db-get-string abbr db 'noerror))
-	 (strings-list (delete (cons abbr old-string) (ebib-db-strings db))))
+	 (strings-list (delete (cons abbr old-string) (ebib-dbstruct-strings db))))
     (when old-string
       (cond
        ((eq if-exists 'overwrite)
@@ -730,7 +730,7 @@ set IF-EXISTS to 'overwrite."
        ((not (eq if-exists 'noerror))
 	(error "Ebib: @STRING abbreviation`%s' exists; cannot overwrite" abbr))))
     (unless old-string
-      (setf (ebib-db-strings db)
+      (setf (ebib-dbstruct-strings db)
 	    (if (null value)
 		strings-list
 	      (append (cons abbr value) strings-list))))))
@@ -739,19 +739,19 @@ set IF-EXISTS to 'overwrite."
   "Return the value of @string definition ABBR in database DB.
 If ABBR does not exist, trigger an error, unless NOERROR is
 non-NIL, in which case return NIL."
-  (let ((value (car (assoc abbr (ebib-db-strings db)))))
+  (let ((value (car (assoc abbr (ebib-dbstruct-strings db)))))
     (unless (or value noerror)
       (error "Ebib: @STRING abbreviation `%s' does not exist" abbr))
     value))
 
 (defun ebib-db-get-all-strings (db)
   "Return the alist containing all @STRING definitions."
-  (ebib-db-strings db))
+  (ebib-dbstruct-strings db))
 
 (defun ebib-db-list-strings-sorted (db)
   "Return a sorted list of @STRING abbreviations (without expansions)."
   (sort (mapcar #'(lambda (elem) (car elem))
-		(ebib-db-strings db))
+		(ebib-dbstruct-strings db))
 	'string<))
 
 (defun ebib-db-set-preamble (preamble db &optional if-exists)
@@ -777,22 +777,22 @@ Return non-NIL on success or NIL if PREAMBLE could not be stored."
        ((eq if-exists 'overwrite)
 	(setq existing-preamble nil))))
     (if (not existing-preamble)
-	(setf (ebib-db-preamble db) preamble)
+	(setf (ebib-dbstruct-preamble db) preamble)
       (unless (eq if-exists 'noerror)
 	(error "Ebib: Preamble is not empty; cannot overwrite")))))
 
 (defun ebib-db-get-preamble (db)
   "Return the preamble of DB.
 If DB has no preamble, return NIL."
-  (ebib-db-preamble db))
+  (ebib-dbstruct-preamble db))
 
 (defun ebib-db-set-modified (mod db)
   "Set the modification flag of DB to MOD."
-  (setf (ebib-db-modified db) mod))
+  (setf (ebib-dbstruct-modified db) mod))
 
 (defun ebib-db-modified-p (db)
   "Return T if DB has been modified, NIL otherwise."
-  (ebib-db-modified db))
+  (ebib-dbstruct-modified db))
 
 ;; TODO do we really need this?
 (defun ebib-db-set-name (name db &optional if-exists)
@@ -801,7 +801,7 @@ IF-EXISTS determines what to do when the database already has a
 name. If it is 'overwrite, the name is changed. If 'noerror, the
 name is not changed an NIL is returned. If IF-EXISTS is NIL, an
 existing name triggers an error."
-  (let ((exists (ebib-db-name db)))
+  (let ((exists (ebib-dbstruct-name db)))
     (when exists
       (cond
        ((eq if-exists 'overwrite)
@@ -809,11 +809,11 @@ existing name triggers an error."
        ((not (eq if-exists 'noerror))
 	(error "Ebib: database has a name; cannot overwrite"))))
     (unless exists
-      (setf (ebib-db-name db) name))))
+      (setf (ebib-dbstruct-name db) name))))
 
 (defun ebib-db-get-name (db)
   "Return the name of DB."
-  (ebib-db-name db))
+  (ebib-dbstruct-name db))
 
 (defun ebib-db-set-filename (filename db &optional if-exists)
   "Set filename of DB to FILENAME.
@@ -821,7 +821,7 @@ IF-EXISTS determines what to do when the database already has a
 filename. If it is 'overwrite, the filename is changed. If 'noerror,
 the filename is not changed an NIL is returned. If IF-EXISTS is
 NIL, an existing filename triggers an error."
-  (let ((exists (ebib-db-filename db)))
+  (let ((exists (ebib-dbstruct-filename db)))
     (when exists
       (cond
        ((eq if-exists 'overwrite)
@@ -829,16 +829,16 @@ NIL, an existing filename triggers an error."
        ((not (eq if-exists 'noerror))
 	(error "Ebib: database has a filename; cannot overwrite"))))
     (unless exists
-      (setf (ebib-db-filename db) filename))))
+      (setf (ebib-dbstruct-filename db) filename))))
 
 (defun ebib-db-get-filename (db)
   "Return the filename of DB."
-  (ebib-db-filename db))
+  (ebib-dbstruct-filename db))
 
 (defun ebib-db-marked-p (entry db)
   "Return T if ENTRY is marked in DB.
 ENTRY is an entry key."
-  (member entry (ebib-db-marked-entries db)))
+  (member entry (ebib-dbstruct-marked-entries db)))
 
 (defun ebib-db-mark-entry (entry db)
   "Add ENTRY to the list of marked entries in DB.
@@ -848,32 +848,32 @@ is performed to see if it is already on the list.
 ENTRY can also be T, in which case all entries are marked."
   (cond
    ((stringp entry)
-    (setf (ebib-db-marked-entries db) (cons entry (ebib-db-marked-entries db))))
+    (setf (ebib-dbstruct-marked-entries db) (cons entry (ebib-dbstruct-marked-entries db))))
    (t
-    (setf (ebib-db-marked-entries db) (ebib-db-list-keys db)))))
+    (setf (ebib-dbstruct-marked-entries db) (ebib-db-list-keys db)))))
 
 (defun ebib-db-unmark-entry (entry db)
   "Remove ENTRY from the list of marked entries in DB.
 If ENTRY is T, all entries are unmarked."
   (cond
    ((stringp entry)
-    (setf (ebib-db-marked-entries db) (remove entry (ebib-db-marked-entries db))))
+    (setf (ebib-dbstruct-marked-entries db) (remove entry (ebib-dbstruct-marked-entries db))))
    (t
-    (setf (ebib-db-marked-entries db) nil))))
+    (setf (ebib-dbstruct-marked-entries db) nil))))
 
 (defun ebib-db-marked-entry-list (db)
   "Return a list of entry keys of all marked entries in DB."
-  (ebib-db-marked-entries db))
+  (ebib-dbstruct-marked-entries db))
 
 (defun ebib-db-set-backup (backup db)
   "Set the backup flag of DB to BACKUP.
 BACKUP must be either T (make backup at next save) or NIL (do not
 make backup at next save)."
-  (setf (ebib-db-backup db) backup))
+  (setf (ebib-dbstruct-backup db) backup))
 
 (defun ebib-db-backup-p (db)
   "Return backup flag of DB."
-  (ebib-db-backup db))
+  (ebib-dbstruct-backup db))
 
 ;; EBIB-DB-UNBRACED-P determines if STRING is enclosed in braces. note that we
 ;; cannot do this by simply checking whether STRING begins with { and ends with
