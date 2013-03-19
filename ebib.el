@@ -696,7 +696,7 @@ value is NIL."
   (let ((value (cdr (assoc field (ebib-db-get-entry key db noerror))))
 	(xref-entry))
     (when (and (not value) xref)
-      (setq xref-entry (ebib-db-get-field-value 'crossref key db 'noerror 'unbraced))
+      (setq xref-entry (ebib-db-get-field-value "crossref" key db 'noerror 'unbraced))
       (when xref-entry
 	(setq value (ebib-db-get-field-value field xref-entry db 'noerror))))
     (unless (or value noerror)
@@ -2710,7 +2710,7 @@ generate the key, see that function's documentation for details."
      (let ((new-key
             (with-temp-buffer
               (ebib-format-entry (ebib-cur-entry-key) ebib-cur-db nil)
-              (let ((x-ref (ebib-get-field-value 'crossref (ebib-cur-entry-key))))
+              (let ((x-ref (ebib-get-field-value "crossref" (ebib-cur-entry-key))))
                 (if x-ref
                     (ebib-format-entry (to-raw (car x-ref)) ebib-cur-db nil)))
               (goto-char (point-min))
@@ -2910,7 +2910,7 @@ EBIB-USE-TIMESTAMP is T."
   (insert "\n"))
 
 (defun ebib-compare-xrefs (x y)
-  (gethash 'crossref (ebib-retrieve-entry x ebib-cur-db)))
+  (gethash "crossref" (ebib-retrieve-entry x ebib-cur-db)))
 
 (defun ebib-format-database (db)
   "Writes database DB into the current buffer in BibTeX format."
@@ -3011,7 +3011,7 @@ Can also be used to change a virtual database into a real one."
 If the current entry's crossref field is empty, search for the
 first entry with the current entry's key in its crossref field."
   (interactive)
-  (let ((new-cur-entry (to-raw (gethash 'crossref
+  (let ((new-cur-entry (to-raw (gethash "crossref"
                                         (ebib-retrieve-entry (ebib-cur-entry-key) ebib-cur-db)))))
     (if new-cur-entry
         (progn
@@ -3984,13 +3984,13 @@ NIL. If EBIB-HIDE-HIDDEN-FIELDS is NIL, return FIELD."
         (let ((collection (ebib-create-collection (ebib-dbstruct-database ebib-cur-db))))
           (if-str (key (completing-read "Key to insert in `crossref': " collection nil t))
               (progn
-                (puthash 'crossref (from-raw key) ebib-cur-entry-hash)
+                (puthash "crossref" (from-raw key) ebib-cur-entry-hash)
                 (ebib-set-modified t)))))
     (select-window (get-buffer-window ebib-entry-buffer) nil)
     ;; we now redisplay the entire entry buffer, so that the crossref'ed
     ;; fields show up. this also puts the cursor back on the type field.
     (ebib-fill-entry-buffer)
-    (setq ebib-current-field 'crossref)
+    (setq ebib-current-field "crossref")
     (re-search-forward "^crossref")
     (ebib-set-fields-highlight)))
 
