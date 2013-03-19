@@ -1768,7 +1768,7 @@ TIMESTAMP indicates whether a timestamp is to be added to the
 entry. Note that for a timestamp to be added, EBIB-USE-TIMESTAMP
 must also be set to T."
   (when (and timestamp ebib-use-timestamp)
-    (puthash 'timestamp (from-raw (format-time-string ebib-timestamp-format)) fields))
+    (puthash "timestamp" (from-raw (format-time-string ebib-timestamp-format)) fields))
   (puthash entry-key fields (ebib-dbstruct-database db))
   (ebib-set-modified t db)
   (setf (ebib-dbstruct-n-entries db) (1+ (ebib-dbstruct-n-entries db)))
@@ -4017,11 +4017,11 @@ NIL. If EBIB-HIDE-HIDDEN-FIELDS is NIL, return FIELD."
               (collection (ebib-keywords-for-database ebib-cur-db)))
           (loop for keyword = (completing-read "Add a new keyword (ENTER to finish): " collection)
                 until (string= keyword "")
-                do (let* ((conts (to-raw (gethash 'keywords ebib-cur-entry-hash)))
+                do (let* ((conts (to-raw (gethash "keywords" ebib-cur-entry-hash)))
                           (new-conts (if conts
                                          (concat conts ebib-keywords-separator keyword)
                                        keyword)))
-                     (puthash 'keywords (from-raw (if ebib-keywords-field-keep-sorted
+                     (puthash "keywords" (from-raw (if ebib-keywords-field-keep-sorted
                                                       (ebib-sort-keywords new-conts)
                                                     new-conts))
                               ebib-cur-entry-hash)
