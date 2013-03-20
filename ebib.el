@@ -875,39 +875,41 @@ make backup at next save)."
   "Return backup flag of DB."
   (ebib-dbstruct-backup db))
 
-;; EBIB-DB-UNBRACED-P determines if STRING is enclosed in braces. note that we
-;; cannot do this by simply checking whether STRING begins with { and ends with
-;; } (or begins and ends with "), because something like "{abc} # D # {efg}"
-;; would then be incorrectly recognised as braced. so we need to do the
-;; following: take out everything that is between braces or quotes, and see if
-;; anything is left. if there is, the original string was braced, otherwise it
-;; was not.
-;;
-;; so i first check whether the string begins with { or ". if not, we certainly
-;; have an unbraced string. (EBIB-DB-UNBRACED-P recognises this through the
-;; default clause of the COND.) if the first character is { or ", we first take
-;; out every occurrence of backslash-escaped { and } or ", so that the rest of
-;; the function does not get confused over them.
-;;
-;; then, if the first character is {, i use REMOVE-FROM-STRING to take out every
-;; occurrence of the regex "{[^{]*?}", which translates to "the smallest string
-;; that starts with { and ends with }, and does not contain another {. IOW, it
-;; takes out the innermost braces and their contents. because braces may be
-;; embedded, we have to repeat this step until no more balanced braces are found
-;; in the string. (note that it would be unwise to check for just the occurrence
-;; of { or }, because that would throw EBIB-DB-UNBRACED-P in an infinite loop if
-;; a string contains an unbalanced brace.)
-;;
-;; for strings beginning with " i do the same, except that it is not necessary
-;; to repeat this in a WHILE loop, for the simple reason that strings surrounded
-;; with double quotes cannot be embedded; i.e., "ab"cd"ef" is not a valid
-;; (BibTeX) string, while {ab{cd}ef} is.
-;;
-;; note: because these strings are to be fed to BibTeX and ultimately (La)TeX,
-;; it might seem that we don't need to worry about strings containing unbalanced
-;; braces, because (La)TeX would choke on them. but the user may inadvertently
-;; enter such a string, and we therefore need to be able to handle it.
-;; (alternatively, we could perform a check on strings and warn the user.)
+;; EBIB-DB-UNBRACED-P determines if STRING is enclosed in braces. Note that
+;; we cannot do this by simply checking whether STRING begins with { and
+;; ends with } (or begins and ends with "), because something like "{abc} #
+;; D # {efg}" would then be incorrectly recognised as braced. So we need to
+;; do the following: take out everything that is between braces or quotes,
+;; and see if anything is left. If there is, the original string was
+;; braced, otherwise it was not.
+
+;; So we first check whether the string begins with { or ". if not, we
+;; certainly have an unbraced string. (EBIB-DB-UNBRACED-P recognises this
+;; through the default clause of the COND.) If the first character is { or
+;; ", we first take out every occurrence of backslash-escaped { and } or ",
+;; so that the rest of the function does not get confused over them.
+
+;; Then, if the first character is {, REMOVE-FROM-STRING takes out every
+;; occurrence of the regex "{[^{]*?}", which translates to "the smallest
+;; string that starts with { and ends with }, and does not contain another
+;; {. IOW, it takes out the innermost braces and their contents. Because
+;; braces may be embedded, we have to repeat this step until no more
+;; balanced braces are found in the string. (Note that it would be unwise
+;; to check for just the occurrence of { or }, because that would throw
+;; EBIB-DB-UNBRACED-P in an infinite loop if a string contains an
+;; unbalanced brace.)
+
+;; For strings beginning with " we do the same, except that it is not
+;; necessary to repeat this in a WHILE loop, for the simple reason that
+;; strings surrounded with double quotes cannot be embedded; i.e.,
+;; "ab"cd"ef" is not a valid (BibTeX) string, while {ab{cd}ef} is.
+
+;; Note: because these strings are to be fed to BibTeX and ultimately
+;; (La)TeX, it might seem that we don't need to worry about strings
+;; containing unbalanced braces, because (La)TeX would choke on them. But
+;; the user may inadvertently enter such a string, and we therefore need to
+;; be able to handle it. (Alternatively, we could perform a check on
+;; strings and warn the user.)
 
 (defun ebib-db-unbraced-p (string)
   "Non-NIL if STRING is not enclosed in braces or quotes."
