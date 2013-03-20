@@ -2073,6 +2073,7 @@ The Ebib buffers are killed, all variables except the keymaps are set to nil."
                 ebib-multiline-buffer
                 ebib-log-buffer))
     (setq ebib-databases nil
+          ebib-cur-db nil
           ebib-index-buffer nil
           ebib-entry-buffer nil
           ebib-initialized nil
