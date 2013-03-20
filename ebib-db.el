@@ -44,7 +44,6 @@
   (database (make-hash-table :test 'equal)) ; hashtable containing the database itself
   (cur-entry nil)                           ; the current entry
   (marked-entries nil)                      ; list of marked entries
-  (n-entries 0)                             ; number of entries stored in this database
   (strings (make-hash-table :test 'equal))  ; hashtable with the @STRING definitions
   (strings-list nil)                        ; sorted list of the @STRING abbreviations
   (preamble nil)                            ; string with the @PREAMBLE definition
