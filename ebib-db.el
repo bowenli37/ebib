@@ -42,16 +42,14 @@
 ;; each database is represented by a struct
 (defstruct ebib-dbstruct
   (database (make-hash-table :test 'equal)) ; hashtable containing the database itself
-  (cur-entry nil)                           ; the current entry
-  (marked-entries nil)                      ; list of marked entries
-  (strings (make-hash-table :test 'equal))  ; hashtable with the @STRING definitions
-  (strings-list nil)                        ; sorted list of the @STRING abbreviations
-  (preamble nil)                            ; string with the @PREAMBLE definition
-  (filename nil)                            ; name of the BibTeX file that holds this database
-  (name nil)                                ; name of the database
-  (modified nil)                            ; has this database been modified?
-  (backup nil)                              ; do we need to make a backup of the .bib file?
-  (virtual nil))                            ; is this a virtual database?
+  (strings)                                 ; alist with the @STRING definitions
+  (preamble)                                ; string with the @PREAMBLE definition
+  (cur-entry)                               ; the current entry
+  (marked-entries)                          ; list of marked entries
+  (filename)                                ; name of the BibTeX file that holds this database
+  (name)                                    ; name of the database
+  (modified)                                ; flag indicating whether this database has been modified
+  (backup))                                 ; flag indicating whether we need to make a backup of the .bib file
 
 (defun ebib-db-new-database (&optional db)
   "Creates a new database instance and returns it.
