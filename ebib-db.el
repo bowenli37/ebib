@@ -380,20 +380,20 @@ ENTRY is an entry key."
 ENTRY is an entry key. ENTRY is added unconditionally, no check
 is performed to see if it is already on the list.
 
-ENTRY can also be T, in which case all entries are marked."
+ENTRY can also be 'all, in which case all entries are marked."
   (cond
    ((stringp entry)
     (setf (ebib-dbstruct-marked-entries db) (cons entry (ebib-dbstruct-marked-entries db))))
-   (t
+   ('all
     (setf (ebib-dbstruct-marked-entries db) (ebib-db-list-keys db)))))
 
 (defun ebib-db-unmark-entry (entry db)
   "Remove ENTRY from the list of marked entries in DB.
-If ENTRY is T, all entries are unmarked."
+If ENTRY is 'all, all entries are unmarked."
   (cond
    ((stringp entry)
     (setf (ebib-dbstruct-marked-entries db) (remove entry (ebib-dbstruct-marked-entries db))))
-   (t
+   ('all
     (setf (ebib-dbstruct-marked-entries db) nil))))
 
 (defun ebib-db-marked-entry-list (db)
