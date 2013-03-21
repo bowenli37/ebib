@@ -408,7 +408,8 @@ ENTRY can also be 'all, in which case all entries are marked."
 
 (defun ebib-db-unmark-entry (entry db)
   "Remove ENTRY from the list of marked entries in DB.
-If ENTRY is 'all, all entries are unmarked."
+ENTRY is an entry key. If ENTRY is 'all, all entries are
+unmarked."
   (cond
    ((stringp entry)
     (setf (ebib-dbstruct-marked-entries db) (remove entry (ebib-dbstruct-marked-entries db))))
