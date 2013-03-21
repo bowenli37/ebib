@@ -454,7 +454,7 @@ make backup at next save)."
 				       "[\\][}]"))
       ;; then remove the innermost braces with their contents and continue until
       ;; no more braces are left.
-      (while (and (in-string ?\{ string) (in-string ?\} string))
+      (while (and (member ?\{ (string-to-list string)) (member ?\} (string-to-list string)))
 	(setq string (remove-from-string string "{[^{]*?}")))
       ;; if STRING is not empty, the original string contains material not in braces
       (> (length string) 0))
