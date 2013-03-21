@@ -39,6 +39,21 @@
 
 ;;; Code:
 
+(defcustom ebib-biblatex-inheritance nil
+  "Inheritance scheme for cross-referencing.
+Inheritances are specified per entry type. The source is the
+field name in the cross-referencing entry, the target the field
+in the cross-referenced entry.
+
+To define inheritances for all entry types, specify `all' as the
+entry type. If you combine inheritances for `all' with
+entry-specific inheritances, the latter override the former."
+  :group 'ebib
+  :type '(repeat (group (string :tag "Entry type")
+                        (repeat :tag "Inherited fields"
+                                (group (string :tag "Source")
+                                       (string :tag "Target"))))))
+
 ;; each database is represented by a struct
 (defstruct ebib-dbstruct
   (database (make-hash-table :test 'equal)) ; hashtable containing the database itself
