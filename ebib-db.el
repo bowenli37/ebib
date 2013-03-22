@@ -290,14 +290,16 @@ set IF-EXISTS to 'overwrite."
 		strings-list
 	      (append (cons abbr value) strings-list))))))
 
-(defun ebib-db-get-string (abbr db &optional noerror)
+(defun ebib-db-get-string (abbr db &optional noerror unbraced)
   "Return the value of @string definition ABBR in database DB.
 If ABBR does not exist, trigger an error, unless NOERROR is
 non-NIL, in which case return NIL."
   (let ((value (car (assoc abbr (ebib-dbstruct-strings db)))))
     (unless (or value noerror)
       (error "Ebib: @STRING abbreviation `%s' does not exist" abbr))
-    value))
+    (if unbraced
+        (ebib-db-unbrace value)
+      value)))
 
 (defun ebib-db-get-all-strings (db)
   "Return the alist containing all @STRING definitions."
