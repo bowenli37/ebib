@@ -262,9 +262,6 @@ The inheritance scheme is stored in `ebib-biblatex-inheritance'."
     (or (cadr (assoc field inheritances))
         field)))
 
-;; TODO strings should be stored in the database WITH braces around the value.
-;; It may be necessary to add them manually, depending on what bibtex.el's
-;; reading function returns.
 (defun ebib-db-set-string (abbr value db &optional if-exists)
   "Set the @string definition ABBR in database DB to VALUE.
 If ABBR does not exist, create it.
