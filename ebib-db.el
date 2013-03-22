@@ -421,6 +421,15 @@ unmarked."
   "Return a list of entry keys of all marked entries in DB."
   (ebib-dbstruct-marked-entries db))
 
+(defun ebib-db-set-filter (filter db)
+  "Set the filter of DB to FILTER.
+The filter is set unconditionally, overwriting any existing filter."
+  (setf (ebib-dbstruct-filter db) filter))
+
+(defun ebib-db-get-filter (db)
+  "Return the filter of DB."
+  (ebib-dbstruct-filter db))
+
 (defun ebib-db-set-backup (backup db)
   "Set the backup flag of DB to BACKUP.
 BACKUP must be either T (make backup at next save) or NIL (do not
