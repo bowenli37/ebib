@@ -67,6 +67,7 @@ changed. REMOVE can be a regex."
   (preamble)                                ; string with the @PREAMBLE definition
   (cur-entry)                               ; the current entry
   (marked-entries)                          ; list of marked entries
+  (filter)                                  ; the active filter
   (filename)                                ; name of the BibTeX file that holds this database
   (name)                                    ; name of the database
   (modified)                                ; flag indicating whether this database has been modified
