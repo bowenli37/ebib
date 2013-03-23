@@ -303,7 +303,7 @@ the value without braces."
   "Return the alist containing all @STRING definitions."
   (ebib-dbstruct-strings db))
 
-(defun ebib-db-list-strings-sorted (db)
+(defun ebib-db-list-strings (db)
   "Return a sorted list of @STRING abbreviations (without expansions)."
   (sort (mapcar #'(lambda (elem) (car elem))
 		(ebib-dbstruct-strings db))
