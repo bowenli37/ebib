@@ -69,7 +69,6 @@ changed. REMOVE can be a regex."
   (marked-entries)                          ; list of marked entries
   (filter)                                  ; the active filter
   (filename)                                ; name of the BibTeX file that holds this database
-  (name)                                    ; name of the database
   (modified)                                ; flag indicating whether this database has been modified
   (backup))                                 ; flag indicating whether we need to make a backup of the .bib file
 
@@ -348,27 +347,6 @@ If DB has no preamble, return NIL."
 (defun ebib-db-modified-p (db)
   "Return T if DB has been modified, NIL otherwise."
   (ebib-dbstruct-modified db))
-
-;; TODO do we really need this?
-(defun ebib-db-set-name (name db &optional if-exists)
-  "Set the name of DB to NAME.
-IF-EXISTS determines what to do when the database already has a
-name. If it is 'overwrite, the name is changed. If 'noerror, the
-name is not changed an NIL is returned. If IF-EXISTS is NIL, an
-existing name triggers an error."
-  (let ((exists (ebib-dbstruct-name db)))
-    (when exists
-      (cond
-       ((eq if-exists 'overwrite)
-	(setq exists nil))
-       ((not (eq if-exists 'noerror))
-	(error "Ebib: database has a name; cannot overwrite"))))
-    (unless exists
-      (setf (ebib-dbstruct-name db) name))))
-
-(defun ebib-db-get-name (db)
-  "Return the name of DB."
-  (ebib-dbstruct-name db))
 
 (defun ebib-db-set-filename (filename db &optional if-exists)
   "Set filename of DB to FILENAME.
